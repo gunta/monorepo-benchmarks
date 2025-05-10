@@ -1,9 +1,5 @@
 {
-  "packages": [
-    "apps/*",
-    "packages/*/*"
-  ],
-  "useWorkspaces": true,
+  "packages": ["apps/*", "packages/*/*"],
   "version": "1.0.0",
   "useNx": true
 }

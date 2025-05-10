@@ -1,6 +1,11 @@
 {
-  "pipeline": {
-    "build": {},
+  "tasks": {
+    "build": {
+      "outputs": [
+        "dist/**",
+        "build/**"
+      ]
+    },
     "crew#build": {
       "outputs": [
         ".next/**"

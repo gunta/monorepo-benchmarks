@@ -17,32 +17,20 @@ ordinary. And, the bigger the repo, the bigger the difference in performance bet
 The repo has Nx, Turbo, Lerna and Lage enabled. They don't affect each other. You can remove one without affecting the
 other one.
 
-## Benchmark & Results (Oct 27)
-
-We will keep the September numbers cause it looks like Turbo 1.6 is broken. Rerunning `turbo run build` several times (which should always result in cache hits) sometimes results in cache misses. Once Turbo is fixed, we will update the numbers.
-
-* average lage time is: 1281.8
-* average turbo time is: 11010.8
-* average lerna (powered by nx) time is: 419
-* average nx time is: 276.2
-* nx is 4.640839971035482x faster than lage
-* nx is 39.865314989138305x faster than turbo
-* nx is 1.5170166545981174x faster than lerna (powered by nx)
-
-## Benchmark & Results (UPDATED September 19, 2022)
+## Benchmark & Results (May 10, 2025)
 
 Run `npm run benchmark`. The benchmark will warm the cache of all the tools. We benchmark how quickly
 Turbo/Nx/Lage/Lerna can figure out what needs to be restored from the cache and restores it.
 
-These are the numbers using the latest MBP machine (Sep 6 version):
+These are the numbers using my machine:
 
-* average lage time is: 1149.3
-* average turbo time is: 1622.5
-* average lerna (powered by nx) time is: 338.3
-* average nx time is: 215.4
-* nx is 5.335654596100278x faster than lage
-* nx is 7.532497678737233x faster than turbo
-* nx is 1.5705663881151346x faster than lerna (powered by nx)
+* average lage time is: 12795.8
+* average turbo time is: 3902.9
+* average lerna (powered by nx) time is: 1329.1
+* average nx time is: 273.3
+* nx is 46.8196121478229x faster than lage
+* nx is 14.28064398097329x faster than turbo
+* nx is 4.863154043175997x faster than lerna (powered by nx)
 
 ### Why is Nx faster than Turbo
 
@@ -98,7 +86,7 @@ Given that Lerna uses Nx to run tasks, unsurprisingly, the numbers for
 Lerna and Nx are very similar--it's the same powerful task orchestrator under the hood. This also means that Lerna supports
 distributed tasks execution (see above) and that it captures terminal output correctly.
 
-## Found an issue? Send a PR.
+## Found an issue? Send a PR
 
 If you find any issue with the repo, with the benchmark or the setup, please send a PR. The intention isn't to cherry
 pick some example where Turbo doesn't do well because of some weird edge case. If it happens that the repo surfaces some
