@@ -24,13 +24,13 @@ Turbo/Nx/Lage/Lerna can figure out what needs to be restored from the cache and 
 
 These are the numbers using GitHub Actions runner:
 
-* average lage time is: 6539.1
-* average turbo time is: 49806.2
-* average lerna (powered by nx) time is: 1810.1
-* average nx time is: 739.6
-* nx is 8.8x faster than lage
-* nx is 67.3x faster than turbo
-* nx is 2.4x faster than lerna (powered by nx)
+* average lage time is: 11830.6
+* average turbo time is: 9992.2
+* average lerna (powered by nx) time is: 3407.0
+* average nx time is: 1849.4
+* nx is 6.4x faster than lage
+* nx is 5.4x faster than turbo
+* nx is 1.8x faster than lerna (powered by nx)
 
 ### Does this performance difference matter in practice?
 
