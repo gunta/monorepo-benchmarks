@@ -126,6 +126,8 @@ function shouldUpdateReadme(
   current: BenchmarkResults,
   previous: BenchmarkResults | null
 ): boolean {
+  // Don't update README if we don't have valid current results
+  if (!current || !current.tools) return false;
   // Always update README with latest benchmark results
   return true;
 }
@@ -135,6 +137,7 @@ function hasSignificantChanges(
   previous: BenchmarkResults | null
 ): boolean {
   if (!previous || !previous.tools) return true; // First run, always significant
+  if (!current || !current.tools) return false; // No current data, no changes
 
   // Check if there's any significant change in any tool
   const toolNames: ToolName[] = ['nx', 'turbo', 'lerna', 'lage'];
@@ -158,6 +161,20 @@ function main(): ComparisonOutputs {
   if (!currentResults) {
     console.error('No current results available');
     process.exit(1);
+  }
+
+  // Check if current results are empty (benchmark was skipped)
+  const hasCurrentData = currentResults && currentResults.tools;
+
+  if (!hasCurrentData) {
+    console.log('No benchmark data available (benchmark was skipped)');
+    console.log('README not updated');
+    process.stdout.write('readme-updated=false\n');
+    process.stdout.write('performance-regression=false\n');
+    return {
+      readmeUpdated: false,
+      performanceRegression: false,
+    };
   }
 
   const shouldUpdate = shouldUpdateReadme(currentResults, previousResults);
