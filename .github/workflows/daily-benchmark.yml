@@ -258,7 +258,7 @@ jobs:
             const fs = require('fs');
             const tagName = '${{ needs.analysis.outputs.tag-name }}';
             const releaseName = '${{ needs.analysis.outputs.release-name }}';
-            const releaseExists = '${{ needs.analysis.outputs.release-exists }}' === 'true';
+            const tagExists = '${{ needs.analysis.outputs.release-exists }}' === 'true';
             const descriptionFile = '${{ needs.analysis.outputs.description-file }}';
 
             let releaseBody = 'No benchmark results available.';
