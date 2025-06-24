@@ -4,6 +4,12 @@ on:
   schedule:
     - cron: '0 6 * * *' # Run daily at 6 AM UTC
   workflow_dispatch: # Allow manual triggers
+    inputs:
+      skip_benchmark:
+        description: 'Skip benchmark job (for testing analysis/publish only)'
+        required: false
+        default: false
+        type: boolean
 
 jobs:
   setup:
@@ -55,6 +61,7 @@ jobs:
   benchmark:
     runs-on: ubuntu-latest
     needs: setup
+    if: ${{ !inputs.skip_benchmark }}
     outputs:
       results-available: ${{ steps.benchmark.conclusion == 'success' }}
     steps:
@@ -105,8 +112,8 @@ jobs:
 
   analysis:
     runs-on: ubuntu-latest
-    needs: benchmark
-    if: needs.benchmark.outputs.results-available != 'false'
+    needs: [setup, benchmark]
+    if: ${{ always() && (inputs.skip_benchmark || needs.benchmark.outputs.results-available != 'false') }}
     outputs:
       readme-updated: ${{ steps.compare.outputs.readme-updated }}
       performance-regression: ${{ steps.compare.outputs.performance-regression }}
@@ -133,15 +140,22 @@ jobs:
           path: dist/
 
       - name: Download benchmark results
+        if: ${{ !inputs.skip_benchmark }}
         uses: actions/download-artifact@v4
         with:
           name: benchmark-results
 
       - name: Read current results
+        if: ${{ !inputs.skip_benchmark }}
         run: |
           echo "RESULTS_JSON<<EOF" >> $GITHUB_ENV
           cat benchmark-results.json >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
+
+      - name: Set empty results when benchmark skipped
+        if: ${{ inputs.skip_benchmark }}
+        run: |
+          echo "RESULTS_JSON={}" >> $GITHUB_ENV
 
       - name: Read previous results
         id: previous-results
@@ -174,6 +188,7 @@ jobs:
           PREVIOUS_RESULTS: ${{ env.PREVIOUS_RESULTS_JSON }}
 
       - name: Save current results
+        if: ${{ !inputs.skip_benchmark }}
         run: |
           cp benchmark-results.json previous-benchmark-results.json
 
@@ -222,6 +237,7 @@ jobs:
           name: analysis-results
 
       - name: Download benchmark results
+        if: ${{ !inputs.skip_benchmark }}
         uses: actions/download-artifact@v4
         with:
           name: benchmark-results
