@@ -233,7 +233,6 @@ jobs:
           git config --local user.name "GitHub Action"
           git add README.md previous-benchmark-results.json
           git commit -m "📊 Update benchmark results - $(date '+%Y-%m-%d') [${{ needs.analysis.outputs.tag-name }}]"
-          git pull --rebase origin main
           git push
 
       - name: Create or update GitHub release
@@ -253,30 +252,42 @@ jobs:
               console.log('Could not read release description file:', error.message);
             }
 
-            if (releaseExists) {
+            // Always try to get existing release first, regardless of tag existence
+            let releaseExists = false;
+            let existingRelease = null;
+
+            try {
+              const { data: release } = await github.rest.repos.getReleaseByTag({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                tag: tagName
+              });
+              existingRelease = release;
+              releaseExists = true;
+              console.log(`Found existing release with tag: ${tagName}`);
+            } catch (error) {
+              if (error.status === 404) {
+                console.log(`No existing release found for tag: ${tagName}`);
+                releaseExists = false;
+              } else {
+                console.log('Error checking for existing release:', error.message);
+                throw error;
+              }
+            }
+
+            if (releaseExists && existingRelease) {
               console.log(`Updating existing release with tag: ${tagName}`);
 
-              try {
-                const { data: release } = await github.rest.repos.getReleaseByTag({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  tag: tagName
-                });
+              await github.rest.repos.updateRelease({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                release_id: existingRelease.id,
+                name: releaseName,
+                body: releaseBody,
+                prerelease: false
+              });
 
-                await github.rest.repos.updateRelease({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  release_id: release.id,
-                  name: releaseName,
-                  body: releaseBody,
-                  prerelease: false
-                });
-
-                console.log('Successfully updated existing release');
-              } catch (error) {
-                console.log('Release tag exists but could not update release:', error.message);
-                console.log('This might be expected if it is a lightweight tag without a release');
-              }
+              console.log('Successfully updated existing release');
             } else {
               console.log(`Creating new release with tag: ${tagName}`);
 
