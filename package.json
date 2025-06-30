@@ -18,7 +18,7 @@
   "devDependencies": {
     "@types/node": "^24.0.7",
     "lage": "2.14.6",
-    "lerna": "8.2.2",
+    "lerna": "8.2.3",
     "nx": "21.2.1",
     "tsx": "^4.20.3",
     "turbo": "2.5.4",
