@@ -50,3 +50,6 @@ turbo-build.log
 
 # Release automation files
 release-description.md
+
+# Proto
+proto-node-install.log
