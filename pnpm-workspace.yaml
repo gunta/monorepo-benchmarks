@@ -3,6 +3,7 @@ packages:
   - packages/*/*
 
 onlyBuiltDependencies:
+  - '@moonrepo/cli'
   - esbuild
   - nx
   - sharp

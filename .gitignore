@@ -53,3 +53,7 @@ release-description.md
 
 # Proto
 proto-node-install.log
+
+# moon
+.moon/cache
+.moon/docker
